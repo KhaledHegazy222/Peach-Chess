@@ -17,12 +17,8 @@ INC := $(wildcard $(INC_DIR)/*.hpp) $(wildcard $(INC_DIR)/*.h)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$(SRC))
 
-INC_PATH 	:= C:\SDL2\Mingw\SDL\x86\include \
-			C:\SDL2\Mingw\SDL\x86\include\SDL2 \
- 			C:\SDL2\Mingw\SDL2_image\x86\include \
- 			C:\SDL2\Mingw\SDL2_image\x86\include\SDL2
-LIB_DIR 	:= 	C:\SDL2\Mingw\SDL\x86\lib \
- 			C:\SDL2\Mingw\SDL2_image\x86\lib
+INC_PATH 	:= 
+LIB_DIR 	:= 	lib
 LIB := mingw32 SDL2main SDL2 SDL2_image
 
 INC_OPT 		:= $(addprefix -I,$(INC_PATH)) $(addprefix -I,$(INC_DIR)) 
