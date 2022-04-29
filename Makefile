@@ -34,11 +34,8 @@ DEF_OPT := $(addprefix -D:,$(DEF))
 
 .PHONY: all build clean 
 
-all : build 
-	
 
-build: $(OBJ) $(EXE)
-
+all: $(SRC_DIR) $(INC_DIR) $(OBJ_DIR) $(BIN_DIR) $(DEP_DIR) $(OBJ) $(EXE)
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp  
 	$(CXX) $(CXXFLAGS) $(-DEF_OPT) $(INC_OPT) -c $< -o $@ 
 
@@ -47,9 +44,26 @@ $(EXE) : $(OBJ)
 	 
 
 
+$(SRC_DIR):
+	mkdir -p $(SRC_DIR)
+$(INC_DIR):
+	mkdir -p $(INC_DIR)
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+$(DEP_DIR):
+	mkdir -p $(DEP_DIR)
+
+
 clean: 
 	rm -f $(OBJ_DIR)/*.o
 	rm -f $(DEP_DIR)/*.d
 	rm -f $(BIN_DIR)/*.exe
+
+
+
+
+
 
 -include $(DEP)
