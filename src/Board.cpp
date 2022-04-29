@@ -499,10 +499,6 @@ void Board::release(int row,int col){
 
     turn = (turn == White ? Black : White);
 
-    std::cout << "Last Move From ---> " << lastMoveFrom.first << " " << lastMoveFrom.second << std::endl;
-    std::cout << "Last Move To ---> " << lastMoveTo.first << " " << lastMoveTo.second << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
 
 
 }
@@ -736,7 +732,7 @@ std::set<std::pair<int,int>>Board::sudoLegalMoves(Piece piece,bool movement){
                 moves.insert({row - 1,col + 1});
             if(col && board[row - 1][col - 1].type != Empty && board[row - 1][col - 1].color != piece.color)
                 moves.insert({row - 1,col - 1});
-            if(row == 6)
+            if(row == 6 && board[row - 1][col].type == Empty && board[row - 2][col].type == Empty)
                 moves.insert({row - 2,col});
             if(row == 3){
                 if(col && board[row][col - 1].type == Pawn && board[row][col - 1].color == Black && lastMoveFrom.first == 1 && lastMoveFrom.second == col - 1){
@@ -756,7 +752,7 @@ std::set<std::pair<int,int>>Board::sudoLegalMoves(Piece piece,bool movement){
             if(col && board[row + 1][col - 1].type != Empty && board[row + 1][col - 1].color != piece.color)
                 moves.insert({row + 1,col - 1});
             
-            if(row == 1)
+            if(row == 1 && board[row + 1][col].type == Empty && board[row + 2][col].type == Empty)
                 moves.insert({row + 2,col});
 
             if(row == 4){
