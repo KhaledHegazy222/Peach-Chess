@@ -105,7 +105,7 @@ std::pair<Position, Position> Engine::getBest(Board& board) {
 	int startTime = SDL_GetTicks();
 	while (SDL_GetTicks() - startTime <= 3 * 1000) {
 		search(depth++,board, -1e9, 1e9, board.turn);
-		if (depth == 5)
+		if (depth == 3)
 			break;
 	}
 	std::cout << depth << std::endl;
