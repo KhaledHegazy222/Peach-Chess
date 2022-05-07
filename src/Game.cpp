@@ -1,72 +1,126 @@
 #include "Game.hpp"
 #include "Board.hpp"
+#include "Engine.hpp"
 
 #include <iostream>
-#include <stdlib.h>
+
+
+Engine peachChess;
 
 SDL_Renderer* Game::renderer;
-int Game::width;
-int Game::height;
+int Game::PaddingLeft;
+int Game::PaddingTop;
+int Game::TileDimension;
 
 
-const char *fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w";
-
-
-Board* board;
-
-
-Game::Game(){}
-Game::~Game(){}
+Board* board = NULL;
+const char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+//const char* fen = "5k2/8/8/8/8/8/7P/7K w - - 0 1";
+//const char* fen = "r6k/pn2bprp/4pNp1/2p1PbQ1/3p1P2/5NR1/PPP3PP/2B2RK1 w - - 0 1";
 
 
 
-void Game::init(const char *title,int x,int y,int w,int h){
-    
-
-    if(SDL_Init(SDL_INIT_EVERYTHING) == 0){
-        
-
-        window = SDL_CreateWindow(title,x,y,w,h,0);   
-
-        renderer = SDL_CreateRenderer(window,-1,0);
-        SDL_SetRenderDrawColor(renderer,120,120,120,0);
-        
-        isRunning = true;
-        width = w;
-        height = h;
-
-
-        board = new Board(w,h);
-        board->init(fen);
-    }
+Game::Game() {
+	board = new Board();
+}
+Game::~Game() {
+	delete board;
 }
 
 
+void Game::init(const char* title, int x, int y, int w, int h) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
+		
+
+		window = SDL_CreateWindow(title, x, y, w, h, SDL_WINDOW_RESIZABLE);
+		renderer = SDL_CreateRenderer(window, -1, 0);
+		SDL_SetRenderDrawColor(renderer, 120, 120, 120, 0);
+		
+		
+
+		
+		board->init(fen);
+		width = w;
+		height = h;
+		isRunning = true;
+		
+		
+		
+		
+
+	}
+
+}
 
 void Game::handleEvents() {
-    SDL_Delay(20);
-    board->handleEvents();
-    SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type){
-        case SDL_QUIT:
-            isRunning = false;
-            break;
-        
-        default:
-            break;
-    }
+	SDL_Event event;
+	SDL_PollEvent(&event);
+	
+	
+	switch (event.type) {
+	case SDL_QUIT:
+		isRunning = false;
+		break;
+	case SDL_WINDOWEVENT:
+		if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+			width = event.window.data1;
+			height = event.window.data2;
+		}
+		break;
+	case SDL_MOUSEBUTTONDOWN:
+		int mouseX, mouseY;
+		SDL_GetMouseState(&mouseX,&mouseY);
+		board->hold((mouseY - PaddingTop) / TileDimension, (mouseX - PaddingLeft) / TileDimension);
+		break;
+	case SDL_MOUSEBUTTONUP:
+		SDL_GetMouseState(&mouseX, &mouseY);
+		board->release((mouseY - PaddingTop) / TileDimension, (mouseX - PaddingLeft) / TileDimension);
+		break;
+	default:
+		break;
+	}
+	
+	
 }
+
 void Game::update() {
-    board->update();
+	
+
+	if (0 || board->turn == BLACK) {
+		render();
+		auto reply = peachChess.getBest(*board);
+		board->performMove(reply.first, reply.second);
+	}
 }
+
 void Game::render() {
-    SDL_RenderClear(renderer);
-    board->render();
-    SDL_RenderPresent(renderer);
+	resize();
+
+	SDL_RenderClear(renderer);
+	board->render();
+	SDL_RenderPresent(renderer);
 }
+
+
+
 void Game::clear() {
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_Quit();
+	board->clear();
+	SDL_DestroyWindow(window);
+	SDL_DestroyRenderer(renderer);
+	SDL_Quit();
 }
+
+
+bool Game::running() {
+	return isRunning;
+}
+
+
+
+void Game::resize() {
+	TileDimension = std::min(height / 8, width / 8);
+	PaddingTop = (height - TileDimension * 8) / 2;
+	PaddingLeft = (width - TileDimension * 8) / 2;
+}
+
+

@@ -7,7 +7,7 @@ INC_DIR := include
 OBJ_DIR := obj
 BIN_DIR := bin
 DEP_DIR := dep
-
+LIB_DIR := lib
 
 
 EXE := $(BIN_DIR)/$(TARGET)
@@ -18,12 +18,11 @@ OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$(SRC))
 
 INC_PATH 	:= 
-LIB_DIR 	:= 	lib
-LIB := mingw32 SDL2main SDL2 SDL2_image
+LIB 		:= mingw32 SDL2main SDL2 SDL2_image
 
-INC_OPT 		:= $(addprefix -I,$(INC_PATH)) $(addprefix -I,$(INC_DIR)) 
+INC_OPT 	:= $(addprefix -I,$(INC_PATH)) $(addprefix -I,$(INC_DIR)) 
 LIB_PATH_OPT 	:= $(addprefix -L,$(LIB_DIR))
-LIB_OPT 		:= $(addprefix -l,$(LIB))
+LIB_OPT 	:= $(addprefix -l,$(LIB))
 
 EXE := $(BIN_DIR)\$(TARGET)
 

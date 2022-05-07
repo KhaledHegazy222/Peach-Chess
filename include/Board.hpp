@@ -1,39 +1,79 @@
 #pragma once
 #include "Piece.hpp"
-#include "MessageBoxManager.hpp"
+#include "King.hpp"
+#include "Queen.hpp"
+#include "Knight.hpp"
+#include "Bishop.hpp"
+#include "Rook.hpp"
+#include "Pawn.hpp"
+#include <vector>
 #include <set>
+#include <stack>
+
+
+class BoardInfo {
+public:
+
+	BoardInfo(bool CWKS,bool CWQS,bool CBKS,bool CBQS,bool WC,bool BC);
+	
+
+
+	bool CastleWhiteKingSide = false;
+	bool CastleWhiteQueenSide = false;
+	bool CastleBlackKingSide = false;
+	bool CastleBlackQueenSide = false;
+	bool WhiteInCheck = false;
+	bool BlackInCheck = false;
+};
+
 
 class Board {
-    private:
-        Piece board[8][8];
-        Piece BlackKing,WhiteKing;
-        bool WhiteCastleKingSide = true;
-        bool WhiteCastleQueenSide = true;
-        bool BlackCastleKingSide = true;
-        bool BlackCastleQueenSide = true;
+private:
+	Piece* MovingPiece = NULL;
+	std::set<std::pair<Position, Position>>availableMoves;
+	
 
-        bool isChecked(Color cl);
-        void performMove(Piece piece,int row,int col,int movement);
-        void reverseMove(Piece from,Piece to);
+	std::stack<std::pair<Piece*, Piece*>>movesList;
+	std::stack<BoardInfo>info;
 
-    public:
-    
 
-        Color turn = White;
+public:
 
-        Board();
-        Board(int width,int height);
-        void init(const char* fen);
-        void handleEvents();
-        void update();
-        void render();
-        void move(int row,int col);
-        void release(int row,int col);
+	Position WhiteKing;
+	Position BlackKing;
+	bool isAttacked(Position cell);
 
-        static bool validPos(int row,int col);
-        std::set<std::pair<int,int>>sudoLegalMoves(Piece piece,bool movement);
-        std::set<std::pair<int,int>>attacked(Color cl);
+	std::vector<std::vector<Piece*>>board;
+	Color turn;
+	Position enPassant;
 
-        void promote(int row,int col);
+	bool CastleWhiteKingSide = false;
+	bool CastleWhiteQueenSide = false;
+	bool CastleBlackKingSide = false;
+	bool CastleBlackQueenSide = false;
+
+	bool WhiteInCheck = false;
+	bool BlackInCheck = false;
+
+	Board();
+	Board(const Board& other);
+	~Board();
+
+	void init(const char* fen);
+	void update();
+	void render();
+	void clear();
+
+	void hold(int row,int column);
+	void release(int row,int column);
+	void performMove(Position from, Position to);
+	void reverseMove();
+
+	std::set<Position> attackedSpots();
+	static bool validPosition(int row, int column);
+	std::vector<std::pair<Position, Position>> getLegalMoves();
+
+
+
 
 };
