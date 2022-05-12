@@ -1,6 +1,6 @@
 #pragma once
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 class Game {
 private :
 
@@ -8,6 +8,7 @@ private :
 	int width;
 	int height;
 	bool isRunning = false;
+	bool endGame = false;
 
 
 public:

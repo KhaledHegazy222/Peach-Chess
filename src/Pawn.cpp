@@ -78,7 +78,7 @@ std::set<std::pair<Position, Position>> Pawn::getLegalMoves(Board& board) {
 	
 	if (position.row == board.enPassant.row && std::abs(position.column - board.enPassant.column) == 1) {
 		Position to(position.row - (color == WHITE ? 1 : -1), board.enPassant.column);
-		//moves.insert({ position,to });
+		moves.insert({ position,to });
 	}
 	
 

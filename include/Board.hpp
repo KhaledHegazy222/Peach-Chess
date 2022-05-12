@@ -14,7 +14,7 @@
 class BoardInfo {
 public:
 
-	BoardInfo(bool CWKS,bool CWQS,bool CBKS,bool CBQS,bool WC,bool BC);
+	BoardInfo(bool CWKS,bool CWQS,bool CBKS,bool CBQS,bool WC,bool BC,Position eP);
 	
 
 
@@ -24,6 +24,7 @@ public:
 	bool CastleBlackQueenSide = false;
 	bool WhiteInCheck = false;
 	bool BlackInCheck = false;
+	Position enPassant;
 };
 
 

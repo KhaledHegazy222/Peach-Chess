@@ -62,7 +62,6 @@ Board::Board(const Board& other) {
 }
 
 Board::~Board() {
-	
 }
 
 void Board::init(const char* fen) {
@@ -163,12 +162,9 @@ void Board::init(const char* fen) {
 		else if (fen[i] == '-')
 			break;
 	}
-
-
 }
 
 void Board::update() {
-	
 }
 
 void Board::render() {
@@ -255,7 +251,6 @@ void Board::render() {
 		dest.h = dest.w = Game::TileDimension;
 		MovingPiece->render(NULL, &dest);
 	}
-
 }
 
 void Board::clear() {
@@ -272,7 +267,7 @@ void Board::clear() {
 void Board::hold(int row,int column) {
 	MovingPiece = NULL;
 	if (!validPosition(row, column) || board[row][column]->type == EMPTY || board[row][column]->color != turn) {
-		reverseMove();
+			
 		return;
 	}
 
@@ -289,9 +284,7 @@ void Board::hold(int row,int column) {
 		reverseMove();
 	}
 	delete board[row][column];
-	board[row][column] = new Piece(row, column);
-
-	
+	board[row][column] = new Piece(row, column);	
 }
 
 void Board::release(int row,int column) {
@@ -319,12 +312,6 @@ void Board::release(int row,int column) {
 	
 	availableMoves.clear();
 
-
-	
-
-
-
-	
 }
 
 bool Board::validPosition(int row, int column) {
@@ -397,9 +384,6 @@ bool Board::isAttacked(Position cell) {
 		
 	}
 	return false;
-
-	
-
 }
 
 void Board::performMove(Position from, Position to) {
@@ -408,7 +392,7 @@ void Board::performMove(Position from, Position to) {
 	Piece* LastMoveTo = clone(board[to.row][to.column]);
 	movesList.push({ LastMoveFrom,LastMoveTo });
 
-	BoardInfo currentInfo(CastleWhiteKingSide, CastleWhiteQueenSide, CastleBlackKingSide, CastleBlackQueenSide,WhiteInCheck,BlackInCheck);
+	BoardInfo currentInfo(CastleWhiteKingSide, CastleWhiteQueenSide, CastleBlackKingSide, CastleBlackQueenSide,WhiteInCheck,BlackInCheck,enPassant);
 	info.push(currentInfo);
 
 
@@ -489,9 +473,6 @@ void Board::performMove(Position from, Position to) {
 	BlackInCheck = isAttacked(BlackKing);
 	turn = temp;
 	turn = (turn == WHITE ? BLACK : WHITE);
-
-			
-
 }
 
 void Board::reverseMove() {
@@ -512,6 +493,14 @@ void Board::reverseMove() {
 	CastleBlackQueenSide = lastInfo.CastleBlackQueenSide;
 	WhiteInCheck = lastInfo.WhiteInCheck;
 	BlackInCheck = lastInfo.BlackInCheck;
+	enPassant = lastInfo.enPassant;
+
+
+	if(from->type == PAWN && to->position.column != from->position.column && to->type == EMPTY){
+		delete board[to->position.row - (from->color == WHITE ? -1 : 1)][to->position.column];
+		board[to->position.row - (from->color == WHITE ? -1 : 1)][to->position.column] = new Pawn(to->position.row - (from->color == WHITE ? -1 : 1),to->position.column,(from->color == WHITE ? BLACK : WHITE));
+	}
+
 	delete board[from->position.row][from->position.column];
 	delete board[to->position.row][to->position.column];
 
@@ -549,12 +538,8 @@ void Board::reverseMove() {
 
 
 
+
 	turn = (turn == WHITE ? BLACK : WHITE);
-
-	
-
-
-
 }
 
 std::vector<std::pair<Position, Position>> Board::getLegalMoves() {
@@ -607,11 +592,12 @@ Piece* clone(Piece* cell) {
 	}
 }
 
-BoardInfo::BoardInfo(bool CWKS, bool CWQS, bool CBKS, bool CBQS,bool WC,bool BC) {
+BoardInfo::BoardInfo(bool CWKS, bool CWQS, bool CBKS, bool CBQS,bool WC,bool BC,Position eP) {
 	CastleWhiteKingSide = CWKS;
 	CastleWhiteQueenSide = CWQS;
 	CastleBlackKingSide = CBKS;
 	CastleBlackQueenSide = CBQS;
 	WhiteInCheck = WC;
 	BlackInCheck = BC;
+	enPassant = eP;
 }

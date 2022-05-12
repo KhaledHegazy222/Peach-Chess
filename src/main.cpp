@@ -2,7 +2,8 @@
 //#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 //#include <crtdbg.h>
-
+#include <exception>
+#include <iostream>
 
 
 int main(int argc, char** argv) {
@@ -22,7 +23,12 @@ int main(int argc, char** argv) {
 
 	while (game->running()) {
 		frameStart = SDL_GetTicks();
-		game->handleEvents();
+		try {
+			game->handleEvents();
+		}
+		catch (...) {
+			std::cout << "Exception Occured\n";
+		}
 		game->update();
 		game->render();
 
@@ -36,6 +42,6 @@ int main(int argc, char** argv) {
 	delete game;
 
 
-//	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

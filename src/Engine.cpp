@@ -12,6 +12,13 @@ int RookValue = 500;
 int QueenValue = 900;
 
 std::pair<Position, Position>bestMove;
+std::pair<Position, Position>tempBestMove;
+
+
+const int WaitingTime = 2 * 1000;
+
+
+uint64_t startTime;
 
 Engine::Engine() {
 	std::srand(time(0));
@@ -21,18 +28,42 @@ int Engine::search(int depth, Board& board, int alpha, int beta,Color turn,bool 
 	if (depth == 0)
 		return evaluate(board);
 	
+	
 	auto moves = board.getLegalMoves();
+	if (moves.empty()) {
+		if (turn == WHITE) {
+			if (board.WhiteInCheck)
+				return -1e5;
+			else
+				return 0;
+		}
+		else {
+			if (board.BlackInCheck)
+				return 1e5;
+			else
+				return 0;
+		}
+	}
 	std::random_shuffle(moves.begin(), moves.end());
 	int ans = 0;
 	if (turn == WHITE) {
+
 		int mx = -1e9;
 		for (auto move : moves) {
+
 			board.performMove(move.first, move.second);
 			int dist = std::abs(board.WhiteKing.row - board.BlackKing.row) + std::abs(board.WhiteKing.column + board.BlackKing.column);
 			int	evaluation = search(depth - 1, board, alpha, beta,BLACK,0) - dist;
 			board.reverseMove();
+
+			if (SDL_GetTicks() - startTime >= WaitingTime) {
+				tempBestMove.first.init(-1, -1);
+				tempBestMove.second.init(-1, -1);
+				return 0;
+			}
+
 			if (evaluation > mx && firstLevel) {
-				bestMove = move;
+				tempBestMove = move;
 			}
 			mx = std::max(mx, evaluation);
 			alpha = std::max(alpha, evaluation);
@@ -45,13 +76,20 @@ int Engine::search(int depth, Board& board, int alpha, int beta,Color turn,bool 
 
 		int mn = 1e9;
 		for (auto move : moves) {
+
 			board.performMove(move.first, move.second);
 
 			int dist = std::abs(board.WhiteKing.row - board.BlackKing.row) + std::abs(board.WhiteKing.column + board.BlackKing.column);
 			int	evaluation = search(depth - 1, board, alpha, beta, WHITE,0) + dist;
 			board.reverseMove();
+
+			if (SDL_GetTicks() - startTime >= WaitingTime) {
+				tempBestMove.first.init(-1, -1);
+				tempBestMove.second.init(-1, -1);
+				return 0;
+			}
 			if (evaluation < mn && firstLevel)
-				bestMove = move;
+				tempBestMove = move;
 			mn = std::min(mn, evaluation);
 			beta= std::min(beta, evaluation);
 			if (beta <= alpha)
@@ -102,10 +140,17 @@ int Engine::evaluate(Board& board) {
 
 std::pair<Position, Position> Engine::getBest(Board& board) {
 	int depth = 1;
-	int startTime = SDL_GetTicks();
-	while (SDL_GetTicks() - startTime <= 3 * 1000) {
+	bestMove.first.init(-1, -1);
+	bestMove.second.init(-1, -1);
+	startTime = SDL_GetTicks();
+	while (1) {
+
+		tempBestMove.first.init(5, 6);
+		tempBestMove.second.init(5, 6);
 		search(depth++,board, -1e9, 1e9, board.turn);
-		if (depth == 3)
+		if (~tempBestMove.first.row)
+			bestMove = tempBestMove;
+		else
 			break;
 	}
 	std::cout << depth << std::endl;

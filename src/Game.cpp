@@ -15,7 +15,7 @@ int Game::TileDimension;
 
 Board* board = NULL;
 const char* fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-//const char* fen = "5k2/8/8/8/8/8/7P/7K w - - 0 1";
+//const char* fen = "8/8/2K5/7r/7r/8/8/k7 b - - 0 1";
 //const char* fen = "r6k/pn2bprp/4pNp1/2p1PbQ1/3p1P2/5NR1/PPP3PP/2B2RK1 w - - 0 1";
 
 
@@ -86,10 +86,16 @@ void Game::handleEvents() {
 void Game::update() {
 	
 
-	if (0 || board->turn == BLACK) {
+	if (!endGame && board->turn == BLACK) {
+		return;
 		render();
 		auto reply = peachChess.getBest(*board);
-		board->performMove(reply.first, reply.second);
+		if(~reply.first.row)
+			board->performMove(reply.first, reply.second);
+		else {
+			endGame = true;
+		}
+
 	}
 }
 

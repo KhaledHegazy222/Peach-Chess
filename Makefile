@@ -1,5 +1,5 @@
 
-TARGET := main.exe
+TARGET := PeachChess.exe
 
 
 SRC_DIR := src
@@ -17,7 +17,7 @@ INC := $(wildcard $(INC_DIR)/*.hpp) $(wildcard $(INC_DIR)/*.h)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 DEP := $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$(SRC))
 
-INC_PATH 	:= 
+INC_PATH 	:= $(INC_DIR)/SDL2
 LIB 		:= mingw32 SDL2main SDL2 SDL2_image
 
 INC_OPT 	:= $(addprefix -I,$(INC_PATH)) $(addprefix -I,$(INC_DIR)) 
@@ -33,15 +33,19 @@ DEF_OPT := $(addprefix -D:,$(DEF))
 
 .PHONY: all build clean 
 
+all: build
 
-all: $(SRC_DIR) $(INC_DIR) $(OBJ_DIR) $(BIN_DIR) $(DEP_DIR) $(OBJ) $(EXE)
+
+build: $(SRC_DIR) $(INC_DIR) $(OBJ_DIR) $(BIN_DIR) $(DEP_DIR) $(OBJ) $(EXE)
+
+
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp  
 	$(CXX) $(CXXFLAGS) $(-DEF_OPT) $(INC_OPT) -c $< -o $@ 
 
 $(EXE) : $(OBJ)
 	$(CXX) -g $^ -o $@ $(LIB_PATH_OPT) $(LIB_OPT) 
-	 
-
+	
+	
 
 $(SRC_DIR):
 	mkdir -p $(SRC_DIR)
