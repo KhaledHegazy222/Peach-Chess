@@ -87,7 +87,7 @@ void Game::update() {
 	
 
 	if (!endGame && board->turn == BLACK) {
-		return;
+		
 		render();
 		auto reply = peachChess.getBest(*board);
 		if(~reply.first.row)
