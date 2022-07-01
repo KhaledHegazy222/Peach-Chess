@@ -27,7 +27,7 @@ LIB_OPT 	:= $(addprefix -l,$(LIB))
 EXE := $(BIN_DIR)\$(TARGET)
 
 CXX := g++
-CXXFLAGS = -w -g -MMD -MP -MF $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$<) -std=c++14
+CXXFLAGS = -w -g -MMD -MP -MF $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$<) -std=c++17 
 DEF := 
 DEF_OPT := $(addprefix -D:,$(DEF))
 
