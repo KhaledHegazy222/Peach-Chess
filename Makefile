@@ -21,13 +21,13 @@ INC_PATH 	:= $(INC_DIR)/SDL2
 LIB 		:= mingw32 SDL2main SDL2 SDL2_image
 
 INC_OPT 	:= $(addprefix -I,$(INC_PATH)) $(addprefix -I,$(INC_DIR)) 
-LIB_PATH_OPT 	:= $(addprefix -L,$(LIB_DIR))
+LIB_PATH_OPT 	:= $(addprefix -L,$(LIB_DIR)) 
 LIB_OPT 	:= $(addprefix -l,$(LIB))
 
 EXE := $(BIN_DIR)\$(TARGET)
 
 CXX := g++
-CXXFLAGS = -w -g -MMD -MP -MF $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$<) -std=c++17 
+CXXFLAGS = -w -g -MMD -MP -MF $(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$<) -std=c++17
 DEF := 
 DEF_OPT := $(addprefix -D:,$(DEF))
 
@@ -43,7 +43,7 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(-DEF_OPT) $(INC_OPT) -c $< -o $@ 
 
 $(EXE) : $(OBJ)
-	$(CXX) -g $^ -o $@ $(LIB_PATH_OPT) $(LIB_OPT) 
+	$(CXX) -g $^ -o $@ $(LIB_PATH_OPT) $(LIB_OPT)  -static-libstdc++ -static-libgcc
 	
 	
 
