@@ -1,9 +1,8 @@
-**/.vscode
-**/*.exe
-**/obj/
-**/dep/
-**/lib/
-**/bin/
+.vscode
+build/
+build.sh
+configure.sh
+install.sh
 
 
 
