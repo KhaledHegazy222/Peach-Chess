@@ -3,6 +3,9 @@ build/
 build.sh
 configure.sh
 install.sh
+build.bat
+configure.bat
+install.bat
 
 
 
